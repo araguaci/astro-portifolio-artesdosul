@@ -1,0 +1,33 @@
+---
+import { BlogPost } from '@partials/BlogPost';
+import { CTA } from '@partials/CTA';
+import Base from '@templates/Base.astro';
+import type { IFrontmatter } from 'astro-boilerplate-components';
+
+interface BlogPostFrontmatter extends IFrontmatter {
+  url: string;
+}
+export interface Props {
+  content: BlogPostFrontmatter;
+}
+
+const { content } = Astro.props as Props;
+const title = `${content.title}`;
+const ogImage = `https://graphigen.vercel.app/api/og?author=Akhil%20G%20Krishnan&title=${
+  content.title
+}&description=${
+  content.description
+}&image=${'https://blog.saeloun.com/images/og_logo.png'}&date=${
+  content.pubDate
+}&type=blog.png`;
+---
+
+<Base
+  head={{ title, description: content.description, ogImage, ogType: 'article' }}
+>
+  <BlogPost frontmatter={content}>
+    <slot />
+  </BlogPost>
+
+  <CTA />
+</Base>

@@ -1,0 +1,35 @@
+---
+import BackToTop from '@components/BackToTop.astro';
+import { CTA } from '@partials/CTA';
+import { Hero } from '@partials/Hero';
+import { RecentOssProjects } from '@partials/RecentOssProjects';
+import { RecentPosts } from '@partials/RecentPosts';
+import { RecentProjects } from '@partials/RecentProjects';
+import Base from '@templates/Base.astro';
+import { AppConfig } from '@utils/AppConfig';
+import { sortPostByDate, sortProjectsByDate } from '@utils/Posts';
+import { getCollection } from 'astro:content';
+
+const allPosts = await getCollection('post');
+const sortedPosts = sortPostByDate(allPosts);
+const lastThreePosts = sortedPosts.slice(0, 3);
+const allProjects = await getCollection('project');
+const sortedProjects = sortProjectsByDate(allProjects);
+const openSourceProjects = sortedProjects
+  .filter((project) => project.data.openSource)
+  .slice(0, 4);
+const myProjects = sortedProjects
+  .filter((project) => !project.data.openSource)
+  .slice(0, 3);
+
+const { title, description, ogImage } = AppConfig;
+---
+
+<Base head={{ title, description, ogImage }}>
+  <Hero />
+  <RecentProjects projectList={myProjects} />
+  <RecentOssProjects projectList={openSourceProjects} />
+  <RecentPosts postList={lastThreePosts} />
+  <CTA />
+  <BackToTop />
+</Base>
